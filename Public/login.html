@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Log In — SDU Mart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">SDU<span>Mart</span></a>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <div class="auth-card">
+      <h1>Welcome back</h1>
+      <p class="auth-subtitle">Log in to shop or manage your vendor stall.</p>
+
+      <form class="auth-form" id="loginForm">
+        <label>
+          Email or phone number
+          <input type="text" name="identifier" placeholder="you@sdu.edu.ng" required>
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Enter your password" required>
+        </label>
+
+        <a href="#" class="forgot-link">Forgot password?</a>
+
+        <button type="submit" class="btn-solid btn-large auth-submit">Log in</button>
+      </form>
+
+      <p class="auth-switch">Don't have an account? <a href="register.html">Sign up</a></p>
+    </div>
+  </main>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

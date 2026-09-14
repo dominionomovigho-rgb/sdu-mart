@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign Up — SDU Mart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">SDU<span>Mart</span></a>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <div class="auth-card auth-card-wide">
+      <h1>Create your account</h1>
+      <p class="auth-subtitle">Join SDU Mart as a shopper or register your business.</p>
+
+      <div class="role-toggle" id="roleToggle">
+        <button type="button" class="role-btn active" data-role="student">Student / Staff</button>
+        <button type="button" class="role-btn" data-role="vendor">Vendor</button>
+      </div>
+
+      <form class="auth-form" id="registerForm">
+        <div class="form-row">
+          <label>
+            Full name
+            <input type="text" name="fullName" placeholder="e.g. Amaka Eze" required>
+          </label>
+          <label>
+            Phone number
+            <input type="tel" name="phone" placeholder="e.g. 080XXXXXXXX" required>
+          </label>
+        </div>
+
+        <label>
+          Email
+          <input type="email" name="email" placeholder="you@sdu.edu.ng" required>
+        </label>
+
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Create a password" required>
+        </label>
+
+        <div class="vendor-fields" id="vendorFields" hidden>
+          <div class="form-row">
+            <label>
+              Shop / business name
+              <input type="text" name="shopName" placeholder="e.g. Mama J's Kitchen">
+            </label>
+            <label>
+              Category
+              <select name="category">
+                <option value="food">Food & Snacks</option>
+                <option value="fashion">Fashion</option>
+                <option value="electronics">Electronics</option>
+                <option value="stationery">Stationery</option>
+                <option value="beauty">Beauty</option>
+                <option value="services">Services</option>
+              </select>
+            </label>
+          </div>
+          <label>
+            Shop location on campus
+            <input type="text" name="shopLocation" placeholder="e.g. Behind Faculty of Science">
+          </label>
+          <p class="vendor-note">Vendor accounts are reviewed by an admin before your shop goes live.</p>
+        </div>
+
+        <button type="submit" class="btn-solid btn-large auth-submit">Create account</button>
+      </form>
+
+      <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </main>
+
+<script src="js/auth.js"></script>
+</body>
+</html>
