@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jollof Rice & Chicken — SDU Mart</title>
+<title>Product — SDU Mart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -40,16 +40,13 @@
       <a href="shop.html" class="back-link">&lsaquo; Back to shop</a>
 
       <div class="product-detail">
-        <div class="product-detail-image" style="background:#E8A33D;">🍲</div>
+        <div class="product-detail-image" id="productImage" style="background:#8A5FBF;">🛍️</div>
 
         <div class="product-detail-info">
-          <p class="product-detail-vendor">Mama J's Kitchen &middot; Behind Faculty of Science</p>
-          <h1>Jollof Rice & Chicken</h1>
-          <p class="product-detail-price">₦1,500</p>
-          <p class="product-detail-desc">
-            Smoky party-style jollof rice served with a well-seasoned chicken piece and fried plantain.
-            Made fresh daily — best enjoyed while it's hot.
-          </p>
+          <p class="product-detail-vendor" id="productVendor">Loading...</p>
+          <h1 id="productName">Loading...</h1>
+          <p class="product-detail-price" id="productPrice"></p>
+          <p class="product-detail-desc" id="productDesc"></p>
 
           <div class="qty-row">
             <span class="qty-label">Quantity</span>
@@ -79,43 +76,9 @@
         </div>
       </div>
 
-      <section class="more-from-vendor">
-        <h2>More from Mama J's Kitchen</h2>
-        <div class="product-grid">
-          <article class="product-card">
-            <div class="product-thumb" style="background:#E8A33D;">🥤</div>
-            <div class="product-body">
-              <h3>Zobo Drink (1L)</h3>
-              <p class="product-vendor">Mama J's Kitchen</p>
-              <div class="product-footer">
-                <span class="product-price">₦700</span>
-                <button class="btn-add">Add</button>
-              </div>
-            </div>
-          </article>
-          <article class="product-card">
-            <div class="product-thumb" style="background:#E8A33D;">🍛</div>
-            <div class="product-body">
-              <h3>Fried Rice & Chicken</h3>
-              <p class="product-vendor">Mama J's Kitchen</p>
-              <div class="product-footer">
-                <span class="product-price">₦1,500</span>
-                <button class="btn-add">Add</button>
-              </div>
-            </div>
-          </article>
-          <article class="product-card">
-            <div class="product-thumb" style="background:#E8A33D;">🍢</div>
-            <div class="product-body">
-              <h3>Suya (Beef, 5 sticks)</h3>
-              <p class="product-vendor">Mama J's Kitchen</p>
-              <div class="product-footer">
-                <span class="product-price">₦2,000</span>
-                <button class="btn-add">Add</button>
-              </div>
-            </div>
-          </article>
-        </div>
+      <section class="more-from-vendor" id="moreFromVendorSection" hidden>
+        <h2 id="moreFromVendorTitle">More from this vendor</h2>
+        <div class="product-grid" id="moreFromVendorGrid"></div>
       </section>
 
     </div>

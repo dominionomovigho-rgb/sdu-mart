@@ -100,7 +100,76 @@ app.post("/api/logout", (req, res) => {
         res.json({ message: "Logged out" });
     });
 });
+// ----- GET PRODUCTS -----
+app.get("/api/products", async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT 
+                products.id, 
+                products.name, 
+                products.price, 
+                products.image_url,
+                products.stock_quantity,
+                vendors.business_name AS vendor_name,
+                categories.name AS category_name
+            FROM products
+            JOIN vendors ON products.vendor_id = vendors.id
+            LEFT JOIN categories ON products.category_id = categories.id
+            ORDER BY products.created_at DESC
+        `);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch products" });
+    }
+});
 
+// ----- GET SINGLE PRODUCT -----
+app.get("/api/products/:id", async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT 
+                products.id, 
+                products.name, 
+                products.description,
+                products.price, 
+                products.image_url,
+                products.stock_quantity,
+                vendors.id AS vendor_id,
+                vendors.business_name AS vendor_name,
+                vendors.location AS vendor_location,
+                categories.name AS category_name
+            FROM products
+            JOIN vendors ON products.vendor_id = vendors.id
+            LEFT JOIN categories ON products.category_id = categories.id
+            WHERE products.id = ?
+        `, [req.params.id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Product not found" });
+        }
+        res.json(rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch product" });
+    }
+});
+
+// ----- GET OTHER PRODUCTS FROM SAME VENDOR -----
+app.get("/api/vendors/:vendorId/products", async (req, res) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT id, name, price 
+            FROM products 
+            WHERE vendor_id = ? AND id != ?
+            LIMIT 4
+        `, [req.params.vendorId, req.query.exclude || 0]);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch vendor products" });
+    }
+});
 app.listen(PORT, () => {
     console.log(`SDU Mart server running on http://localhost:${PORT}`);
 });
