@@ -90,10 +90,27 @@ if (qtyMinus && qtyPlus && qtyValue) {
   });
 }
 
+function getCart() {
+  return JSON.parse(localStorage.getItem('sduMartCart') || '[]');
+}
+
+function saveCart(cart) {
+  localStorage.setItem('sduMartCart', JSON.stringify(cart));
+}
+
 if (addToCartBtn && addConfirm) {
   addToCartBtn.addEventListener('click', () => {
-    console.log('Added to cart:', { productId, quantity });
-    // TODO: replace with a real call to the cart API once the backend is ready
+    const cart = getCart();
+    const existing = cart.find(item => item.productId === productId);
+
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      cart.push({ productId, quantity });
+    }
+
+    saveCart(cart);
+
     addConfirm.hidden = false;
     setTimeout(() => {
       addConfirm.hidden = true;

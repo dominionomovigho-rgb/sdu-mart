@@ -96,36 +96,23 @@
 
         </form>
 
-        <aside class="cart-summary">
+                        <aside class="cart-summary">
           <h2>Order Summary</h2>
-          <div class="summary-line-item">
-            <span>Jollof Rice & Chicken &times;2</span>
-            <span>₦3,000</span>
-          </div>
-          <div class="summary-line-item">
-            <span>Campus Hoodie — Navy &times;1</span>
-            <span>₦6,000</span>
-          </div>
-          <div class="summary-line-item">
-            <span>Type-C Fast Charger &times;1</span>
-            <span>₦3,200</span>
-          </div>
+          <div id="summaryLineItems"></div>
           <div class="summary-row" style="margin-top:14px;">
             <span>Subtotal</span>
-            <span>₦12,200</span>
+            <span id="summarySubtotal">₦0</span>
           </div>
           <div class="summary-row">
             <span>Delivery</span>
-            <span>₦300</span>
+            <span>Calculated by vendor</span>
           </div>
           <div class="summary-row summary-total">
             <span>Total</span>
-            <span>₦12,500</span>
+            <span id="summaryTotal">₦0</span>
           </div>
           <button type="submit" form="checkoutForm" class="btn-solid btn-large summary-checkout">Place order</button>
         </aside>
-      </div>
-
     </div>
   </main>
 

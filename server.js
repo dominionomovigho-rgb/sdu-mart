@@ -170,6 +170,70 @@ app.get("/api/vendors/:vendorId/products", async (req, res) => {
         res.status(500).json({ error: "Could not fetch vendor products" });
     }
 });
+// ----- CHECK LOGIN STATUS -----
+app.get("/api/me", (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ error: "Not logged in" });
+    }
+    res.json({ userId: req.session.userId, role: req.session.role });
+});
+
+// ----- CREATE ORDER -----
+app.post("/api/orders", async (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ error: "You must be logged in to place an order" });
+    }
+
+    const { items, deliveryMethod } = req.body; // items: [{ productId, quantity }]
+
+    if (!items || items.length === 0) {
+        return res.status(400).json({ error: "Cart is empty" });
+    }
+
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Fetch current prices from DB (never trust prices sent from the browser)
+        let total = 0;
+        const itemsWithPrices = [];
+
+        for (const item of items) {
+            const [rows] = await connection.query(
+                "SELECT id, price FROM products WHERE id = ?",
+                [item.productId]
+            );
+            if (rows.length === 0) throw new Error(`Product ${item.productId} not found`);
+
+            const price = Number(rows[0].price);
+            total += price * item.quantity;
+            itemsWithPrices.push({ productId: item.productId, quantity: item.quantity, price });
+        }
+
+        const [orderResult] = await connection.query(
+            "INSERT INTO orders (customer_id, status, delivery_method, total_amount) VALUES (?, 'pending', ?, ?)",
+            [req.session.userId, deliveryMethod || 'pickup', total]
+        );
+
+        const orderId = orderResult.insertId;
+
+        for (const item of itemsWithPrices) {
+            await connection.query(
+                "INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)",
+                [orderId, item.productId, item.quantity, item.price]
+            );
+        }
+
+        await connection.commit();
+        res.status(201).json({ message: "Order placed successfully", orderId, total });
+    } catch (err) {
+        await connection.rollback();
+        console.error(err);
+        res.status(500).json({ error: "Could not place order" });
+    } finally {
+        connection.release();
+    }
+});
 app.listen(PORT, () => {
     console.log(`SDU Mart server running on http://localhost:${PORT}`);
 });
