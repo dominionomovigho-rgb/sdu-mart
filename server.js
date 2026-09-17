@@ -170,6 +170,16 @@ app.get("/api/vendors/:vendorId/products", async (req, res) => {
         res.status(500).json({ error: "Could not fetch vendor products" });
     }
 });
+// ----- GET CATEGORIES -----
+app.get("/api/categories", async (req, res) => {
+    try {
+        const [rows] = await pool.query("SELECT id, name FROM categories ORDER BY name");
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch categories" });
+    }
+});
 // ----- CHECK LOGIN STATUS -----
 app.get("/api/me", (req, res) => {
     if (!req.session.userId) {
@@ -232,6 +242,111 @@ app.post("/api/orders", async (req, res) => {
         res.status(500).json({ error: "Could not place order" });
     } finally {
         connection.release();
+    }
+});
+
+// ----- CREATE PRODUCT (vendor only) -----
+app.post("/api/vendor/products", async (req, res) => {
+    if (!req.session.userId || req.session.role !== "vendor") {
+        return res.status(403).json({ error: "Only approved vendors can add products" });
+    }
+
+    const { name, description, price, category_id, stock_quantity } = req.body;
+
+    if (!name || !price) {
+        return res.status(400).json({ error: "Name and price are required" });
+    }
+
+    try {
+        // Find this vendor's own vendor record and check they're approved
+        const [vendorRows] = await pool.query(
+            "SELECT id, approved FROM vendors WHERE user_id = ?",
+            [req.session.userId]
+        );
+
+        if (vendorRows.length === 0) {
+            return res.status(403).json({ error: "No vendor profile found for this account" });
+        }
+        if (!vendorRows[0].approved) {
+            return res.status(403).json({ error: "Your vendor account is not yet approved" });
+        }
+
+        const vendorId = vendorRows[0].id;
+
+        const [result] = await pool.query(
+            "INSERT INTO products (vendor_id, category_id, name, description, price, stock_quantity) VALUES (?, ?, ?, ?, ?, ?)",
+            [vendorId, category_id || null, name, description || "", price, stock_quantity || 0]
+        );
+
+        res.status(201).json({ message: "Product added successfully", productId: result.insertId });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not add product" });
+    }
+});
+// ----- GET VENDOR'S OWN PRODUCTS -----
+app.get("/api/vendor/my-products", async (req, res) => {
+    if (!req.session.userId || req.session.role !== "vendor") {
+        return res.status(403).json({ error: "Vendor access only" });
+    }
+
+    try {
+        const [vendorRows] = await pool.query(
+            "SELECT id FROM vendors WHERE user_id = ?",
+            [req.session.userId]
+        );
+        if (vendorRows.length === 0) {
+            return res.status(403).json({ error: "No vendor profile found" });
+        }
+
+        const [products] = await pool.query(
+            "SELECT id, name, price, stock_quantity, created_at FROM products WHERE vendor_id = ? ORDER BY created_at DESC",
+            [vendorRows[0].id]
+        );
+        res.json(products);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch your products" });
+    }
+});
+
+// ----- GET ORDERS CONTAINING VENDOR'S PRODUCTS -----
+app.get("/api/vendor/my-orders", async (req, res) => {
+    if (!req.session.userId || req.session.role !== "vendor") {
+        return res.status(403).json({ error: "Vendor access only" });
+    }
+
+    try {
+        const [vendorRows] = await pool.query(
+            "SELECT id FROM vendors WHERE user_id = ?",
+            [req.session.userId]
+        );
+        if (vendorRows.length === 0) {
+            return res.status(403).json({ error: "No vendor profile found" });
+        }
+
+        const [rows] = await pool.query(`
+            SELECT 
+                orders.id AS order_id,
+                orders.status,
+                orders.delivery_method,
+                orders.created_at,
+                products.name AS product_name,
+                order_items.quantity,
+                order_items.price_at_purchase,
+                users.full_name AS customer_name
+            FROM order_items
+            JOIN orders ON order_items.order_id = orders.id
+            JOIN products ON order_items.product_id = products.id
+            JOIN users ON orders.customer_id = users.id
+            WHERE products.vendor_id = ?
+            ORDER BY orders.created_at DESC
+        `, [vendorRows[0].id]);
+
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch your orders" });
     }
 });
 app.listen(PORT, () => {

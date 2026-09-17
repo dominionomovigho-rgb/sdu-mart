@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vendor Dashboard — SDU Mart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo">SDU<span>Mart</span></a>
+      <nav class="header-nav">
+        <a href="add-product.html" class="btn-outline">Add product</a>
+        <a href="login.html" class="btn-outline">Log in</a>
+        <a href="register.html" class="btn-solid">Sign up</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shop-page">
+    <div class="section-inner">
+      <div class="shop-heading">
+        <h1>Your Vendor Dashboard</h1>
+        <p>Manage your products and see incoming orders.</p>
+      </div>
+
+      <section>
+        <h2>Your Products</h2>
+        <div id="myProductsList">Loading...</div>
+      </section>
+
+      <section style="margin-top:40px;">
+        <h2>Orders for Your Products</h2>
+        <div id="myOrdersList">Loading...</div>
+      </section>
+    </div>
+  </main>
+
+<script src="js/script.js"></script>
+<script src="js/vendor-dashboard.js"></script>
+</body>
+</html>
