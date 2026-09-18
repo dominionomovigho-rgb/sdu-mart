@@ -349,6 +349,44 @@ app.get("/api/vendor/my-orders", async (req, res) => {
         res.status(500).json({ error: "Could not fetch your orders" });
     }
 });
+     
+
+// ----- GET PENDING VENDORS (admin only) -----
+app.get("/api/admin/pending-vendors", async (req, res) => {
+    if (!req.session.userId || req.session.role !== "admin") {
+        return res.status(403).json({ error: "Admin access only" });
+    }
+
+    try {
+        const [rows] = await pool.query(`
+            SELECT vendors.id, vendors.business_name, vendors.category, vendors.location, users.full_name, users.email
+            FROM vendors
+            JOIN users ON vendors.user_id = users.id
+            WHERE vendors.approved = FALSE
+            ORDER BY vendors.created_at DESC
+        `);
+        res.json(rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not fetch pending vendors" });
+    }
+});
+
+// ----- APPROVE A VENDOR (admin only) -----
+app.post("/api/admin/approve-vendor/:id", async (req, res) => {
+    if (!req.session.userId || req.session.role !== "admin") {
+        return res.status(403).json({ error: "Admin access only" });
+    }
+
+    try {
+        await pool.query("UPDATE vendors SET approved = TRUE WHERE id = ?", [req.params.id]);
+        res.json({ message: "Vendor approved" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not approve vendor" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`SDU Mart server running on http://localhost:${PORT}`);
 });
